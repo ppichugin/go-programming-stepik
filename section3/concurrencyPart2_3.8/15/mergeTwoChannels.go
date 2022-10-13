@@ -31,7 +31,7 @@ n раз сделать следующее:
 const N = 20
 
 func merge2Channels(fn func(int) int, in1 <-chan int, in2 <-chan int, out chan<- int, n int) {
-	go func(f func(int) int, in1 <-chan int, in2 <-chan int, out chan<- int) {
+	go func(newFn func(int) int, in1 <-chan int, in2 <-chan int, out chan<- int) {
 		done := make(chan bool, n*2)
 		results := make([]*int, n*2)
 
@@ -55,7 +55,7 @@ func merge2Channels(fn func(int) int, in1 <-chan int, in2 <-chan int, out chan<-
 			for i := 0; i < n; i++ {
 				x := <-ch
 				go func(i int, x int) {
-					result := f(x)
+					result := newFn(x)
 					results[i] = &result
 					done <- true
 				}(i, x)
